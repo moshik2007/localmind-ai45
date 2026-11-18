@@ -1,0 +1,472 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LocalMind AI - Your Smart Assistant</title>
+<style>
+*{box-sizing:border-box}
+:root{--cyan:#55f5df;--blue:#667dff;--bg:#080d1b}
+body{
+ margin:0;background:var(--bg);color:white;
+ font-family:Arial,sans-serif;min-height:100vh;
+ overflow-x:hidden
+}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
+/* BACKGROUND */
+.background{
+ position:fixed;inset:0;z-index:-2;
+ background:
+ radial-gradient(circle at 15% 20%,#174a6460,transparent 35%),
+ radial-gradient(circle at 85% 70%,#5142a455,transparent 35%),
+ linear-gradient(135deg,#080d1b,#111b36,#080d1b)
+}
+.orb{
+ position:fixed;width:220px;height:220px;border-radius:50%;
+ filter:blur(65px);opacity:.28;z-index:-1;
+ background:#19dcca;top:10%;left:5%;
+ animation:float 8s infinite alternate
+}
+.orb.two{background:#7755ff;top:65%;left:75%;animation-delay:2s}
+@keyframes float{to{transform:translate(80px,70px) scale(1.3)}}
+
+/* LOGIN */
+.login-screen{
+ min-height:100vh;display:flex;align-items:center;
+ justify-content:center;padding:22px
+}
+.login-card{
+ width:100%;max-width:440px;padding:36px 30px;
+ background:linear-gradient(145deg,#1c2b48eF,#111a30f5);
+ border:1px solid #ffffff25;border-radius:28px;
+ box-shadow:0 30px 80px #0009, inset 0 1px 1px #ffffff25;
+ backdrop-filter:blur(20px);
+ transform:perspective(1000px) rotateX(2deg);
+ text-align:center
+}
+.logo{
+ width:78px;height:78px;margin:0 auto 15px;
+ border-radius:24px;display:grid;place-items:center;
+ font-size:37px;color:#061b28;
+ background:linear-gradient(135deg,#5ffff0,#687dff);
+ box-shadow:0 0 35px #4debdc66,0 12px 25px #0007;
+ transform:rotate(-8deg)
+}
+h1{font-size:29px;margin:10px 0;color:white}
+.gradient{
+ background:linear-gradient(90deg,#5ffff0,#8a9bff);
+ -webkit-background-clip:text;color:transparent
+}
+.subtitle{color:#a8b8d1;font-size:14px;line-height:1.6}
+.field{text-align:left;margin-top:15px}
+.field label{font-size:12px;color:#b7c8df}
+.field input{
+ width:100%;padding:15px;margin-top:7px;
+ background:#091426;border:1px solid #52678a66;
+ border-radius:12px;color:white;outline:none
+}
+.field input:focus{border-color:var(--cyan);box-shadow:0 0 15px #55f5df22}
+.primary{
+ width:100%;padding:15px;margin-top:22px;
+ border:0;border-radius:13px;font-weight:bold;
+ color:#061b27;background:linear-gradient(100deg,#57f5df,#8991ff);
+ box-shadow:0 9px 25px #55dfff30;
+ transition:.25s
+}
+.primary:hover{transform:translateY(-3px);box-shadow:0 15px 30px #55dfff55}
+.error{color:#ff8585;font-size:13px;min-height:20px}
+
+/* HOME */
+.app{min-height:100vh;display:flex}
+.sidebar{
+ width:250px;padding:22px 15px;
+ background:#101a2deF;border-right:1px solid #ffffff14;
+ display:flex;flex-direction:column
+}
+.brand{display:flex;align-items:center;gap:12px;padding:8px}
+.brand-icon{
+ width:43px;height:43px;border-radius:14px;
+ display:grid;place-items:center;
+ color:#071a28;background:linear-gradient(135deg,#5ffff0,#768bff);
+ font-size:23px
+}
+.brand strong{font-size:19px}
+.side-title{color:#8295b3;font-size:11px;margin:30px 10px 12px}
+.side-btn{
+ width:100%;padding:13px;margin:4px 0;
+ text-align:left;border:1px solid transparent;
+ color:#d8e5f7;background:transparent;border-radius:11px
+}
+.side-btn:hover,.side-btn.active{background:#253957;border-color:#ffffff17}
+.sidebar-bottom{margin-top:auto}
+.profile{padding:13px;background:#253450;border-radius:13px;font-size:13px;overflow-wrap:anywhere}
+.main{flex:1;min-width:0;padding:22px 28px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.topbar h2{margin:8px 0}
+.status{font-size:12px;color:#5ff5d8}
+.hero{
+ margin:25px 0;padding:25px;
+ border:1px solid #ffffff20;border-radius:22px;
+ background:linear-gradient(115deg,#1d3c58cc,#34275dcc);
+ box-shadow:0 20px 50px #0005;
+ position:relative;overflow:hidden
+}
+.hero:after{
+ content:"✧";position:absolute;right:30px;top:-30px;
+ font-size:180px;color:#ffffff0b
+}
+.hero h2{font-size:27px;margin:0 0 10px}
+.hero p{color:#c1cfe2;font-size:14px;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}
+.chip{
+ border:1px solid #ffffff20;border-radius:20px;
+ padding:8px 12px;color:#c8f8f0;font-size:12px
+}
+
+/* CHAT */
+.chat-panel{
+ background:#111d31;border:1px solid #ffffff19;
+ border-radius:20px;overflow:hidden;
+ box-shadow:0 20px 55px #0005
+}
+.chat-head{
+ padding:16px;border-bottom:1px solid #ffffff15;
+ display:flex;justify-content:space-between;align-items:center
+}
+.chat-head small{color:#8fa4c2}
+.chat-area{
+ height:350px;overflow-y:auto;padding:18px;
+ display:flex;flex-direction:column;gap:12px
+}
+.msg{
+ max-width:88%;padding:13px 15px;
+ border-radius:15px;line-height:1.6;
+ font-size:14px;white-space:pre-wrap;
+ overflow-wrap:anywhere
+}
+.user-msg{align-self:flex-end;background:linear-gradient(120deg,#286b7b,#4655a0)}
+.ai-msg{align-self:flex-start;background:#24334b;border:1px solid #ffffff12}
+.msg-label{font-size:10px;color:#9ab0cb;margin-bottom:5px}
+.typing{color:#64edda}
+.composer{padding:13px;border-top:1px solid #ffffff15}
+.composer textarea{
+ width:100%;resize:vertical;min-height:55px;max-height:130px;
+ background:#091426;border:1px solid #435779;
+ color:white;border-radius:12px;padding:14px;outline:none
+}
+.actions{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
+.action{
+ border:1px solid #ffffff24;background:#263854;
+ color:white;border-radius:10px;padding:10px 13px
+}
+.send{background:linear-gradient(100deg,#55f5df,#8c9bff);color:#071a27;font-weight:bold;border:0}
+.action:disabled{opacity:.5;cursor:not-allowed}
+#cameraBox{padding:12px;background:#081323}
+video{width:100%;max-height:250px;border-radius:12px;background:black}
+.footer{text-align:center;color:#7388a8;font-size:11px;padding:17px}
+@media(max-width:750px){
+ .sidebar{width:65px;padding:12px 7px}
+ .brand{padding:5px}.brand strong,.side-text,.side-title,.profile{display:none}
+ .side-btn{text-align:center;font-size:19px;padding:13px 5px}
+ .main{padding:14px}
+ .hero{padding:20px}
+ .hero h2{font-size:22px}
+ .chat-area{height:42vh;min-height:260px}
+}
+</style>
+</head>
+<body>
+<div class="background"></div>
+<div class="orb"></div><div class="orb two"></div>
+
+<!-- LOGIN PAGE -->
+<section class="login-screen" id="loginPage">
+ <div class="login-card">
+  <div class="logo">✦</div>
+  <h1>LocalMind <span class="gradient">AI</span></h1>
+  <p class="subtitle">Your intelligent world. One conversation away.</p>
+
+  <div class="field">
+   <label>FULL NAME</label>
+   <input id="fullName" placeholder="Enter your name">
+  </div>
+  <div class="field">
+   <label>GMAIL ADDRESS</label>
+   <input id="gmail" type="email" placeholder="example@gmail.com">
+  </div>
+  <div class="field">
+   <label>MOBILE NUMBER</label>
+   <input id="mobile" type="tel" maxlength="10" placeholder="10 digit mobile number">
+  </div>
+
+  <button class="primary" onclick="login()">ENTER LOCALMIND ✦</button>
+  <p class="error" id="loginError"></p>
+  <p class="subtitle">A smarter space for your questions.</p>
+ </div>
+</section>
+
+<!-- HOME PAGE -->
+<section class="app hidden" id="homePage">
+ <aside class="sidebar">
+  <div class="brand">
+   <div class="brand-icon">✦</div>
+   <strong>LocalMind</strong>
+  </div>
+  <div class="side-title">WORKSPACE</div>
+  <button class="side-btn active" onclick="showHome()">⌂ <span class="side-text">Home</span></button>
+  <button class="side-btn" onclick="newChat()">＋ <span class="side-text">New Chat</span></button>
+  <button class="side-btn" onclick="showHistory()">◷ <span class="side-text">History</span></button>
+  <button class="side-btn" onclick="toggleCamera()">▣ <span class="side-text">Camera</span></button>
+  <button class="side-btn" onclick="startMic()">🎙 <span class="side-text">Microphone</span></button>
+  <div class="sidebar-bottom">
+   <div class="profile" id="profileInfo"></div>
+   <button class="side-btn" onclick="logout()">↪ <span class="side-text">Logout</span></button>
+  </div>
+ </aside>
+
+ <main class="main">
+  <div class="topbar">
+   <div>
+    <div class="status">● AI ASSISTANT ONLINE</div>
+    <h2>Welcome to LocalMind</h2>
+   </div>
+   <button class="action" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="hero">
+   <h2>Hello, <span class="gradient" id="userName">Friend</span> ✨</h2>
+   <p>Your personal AI assistant is ready. Ask questions, explore ideas, learn something new and create something amazing.</p>
+   <div class="chips">
+    <span class="chip">✦ Smart Answers</span>
+    <span class="chip">🎙 Voice Input</span>
+    <span class="chip">📷 Camera</span>
+    <span class="chip">🌐 Online AI</span>
+   </div>
+  </div>
+
+  <div class="chat-panel">
+   <div class="chat-head">
+    <div><strong>✦ AI Conversation</strong><br><small>Ask anything you want</small></div>
+    <span class="status">● Ready</span>
+   </div>
+   <div id="chatArea" class="chat-area">
+    <div class="msg ai-msg">
+     <div class="msg-label">LOCALMIND AI</div>
+     Hello! Welcome to LocalMind AI. What would you like to know today?
+    </div>
+   </div>
+
+   <div id="cameraBox" class="hidden">
+    <video id="cameraVideo" autoplay playsinline></video>
+    <button class="action" onclick="toggleCamera()">Close Camera</button>
+   </div>
+
+   <div class="composer">
+    <textarea id="question" placeholder="Message LocalMind AI..."></textarea>
+    <div class="actions">
+     <button class="action send" id="sendBtn" onclick="sendMessage()">➤ Send</button>
+     <button class="action" onclick="startMic()">🎙 Mic</button>
+     <button class="action" onclick="toggleCamera()">📷 Camera</button>
+     <button class="action" onclick="clearChat()">Clear</button>
+    </div>
+   </div>
+  </div>
+  <div class="footer">LocalMind AI • Your Smart Assistant</div>
+ </main>
+</section>
+
+<script>
+const AI_URL="https://text.pollinations.ai/openai";
+let history=[];
+let cameraStream=null;
+let busy=false;
+
+function login(){
+ const name=document.getElementById("fullName").value.trim();
+ const email=document.getElementById("gmail").value.trim();
+ const phone=document.getElementById("mobile").value.trim();
+ const error=document.getElementById("loginError");
+
+ if(!name||!email||!phone){error.textContent="Please fill all fields.";return}
+ if(email!==email.toLowerCase()||!/^[a-z0-9._%+-]+@gmail\.com$/.test(email)){
+  error.textContent="Enter a valid lowercase Gmail address.";return;
+ }
+ if(!/^[0-9]{10}$/.test(phone)){
+  error.textContent="Enter exactly 10 digits for mobile number.";return;
+ }
+ const user={name,email,phone};
+ localStorage.setItem("localmindUser",JSON.stringify(user));
+ openHome(user);
+}
+
+function openHome(user){
+ document.getElementById("loginPage").classList.add("hidden");
+ document.getElementById("homePage").classList.remove("hidden");
+ document.getElementById("userName").textContent=user.name;
+ document.getElementById("profileInfo").textContent=user.name+" | "+user.email;
+ loadHistory();
+}
+
+function logout(){
+ stopCamera();
+ localStorage.removeItem("localmindUser");
+ location.reload();
+}
+
+function addMessage(text,type){
+ const area=document.getElementById("chatArea");
+ const div=document.createElement("div");
+ div.className="msg "+(type==="user"?"user-msg":"ai-msg");
+ const label=document.createElement("div");
+ label.className="msg-label";
+ label.textContent=type==="user"?"YOU":"LOCALMIND AI";
+ const content=document.createElement("div");
+ content.textContent=text;
+ div.append(label,content);
+ area.appendChild(div);
+ area.scrollTop=area.scrollHeight;
+ return content;
+}
+
+async function sendMessage(){
+ if(busy)return;
+ const input=document.getElementById("question");
+ const question=input.value.trim();
+ if(!question)return;
+
+ input.value="";
+ addMessage(question,"user");
+ const answerBox=addMessage("Thinking...","bot");
+ const btn=document.getElementById("sendBtn");
+ busy=true;btn.disabled=true;
+
+ try{
+  const response=await fetch(AI_URL,{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    model:"openai",
+    messages:[
+     {role:"system",content:"You are LocalMind, a helpful and knowledgeable AI assistant. Give accurate, relevant and clear answers. Understand Tamil, English and Tanglish. Explain step by step when needed. Do not invent facts. If uncertain, say so."},
+     ...history,
+     {role:"user",content:question}
+    ]
+   })
+  });
+
+  const raw=await response.text();
+  if(!response.ok)throw new Error("AI service error: "+response.status);
+  let data;
+  try{data=JSON.parse(raw)}
+  catch(e){
+   if(raw.trim())data={choices:[{message:{content:raw}}]};
+   else throw new Error("Empty response from AI service");
+  }
+
+  const answer=data.choices?.[0]?.message?.content ||
+               data.output || data.response || data.text;
+  if(typeof answer!=="string"||!answer.trim()){
+   throw new Error("AI did not return an answer. Please retry.");
+  }
+
+  answerBox.textContent=answer;
+  history.push(
+   {role:"user",content:question},
+   {role:"assistant",content:answer}
+  );
+  if(history.length>30)history=history.slice(-30);
+  saveHistory();
+
+ }catch(err){
+  answerBox.textContent="AI service is currently unavailable. Please check your internet connection and try again. ("+err.message+")";
+ }finally{
+  busy=false;btn.disabled=false;
+ }
+}
+
+function saveHistory(){
+ const user=JSON.parse(localStorage.getItem("localmindUser")||"null");
+ if(user)localStorage.setItem("localmindHistory_"+user.email,JSON.stringify(history));
+}
+
+function loadHistory(){
+ const user=JSON.parse(localStorage.getItem("localmindUser")||"null");
+ history=user?JSON.parse(localStorage.getItem("localmindHistory_"+user.email)||"[]"):[];
+ const area=document.getElementById("chatArea");
+ area.innerHTML="";
+ if(history.length===0){
+  addMessage("Hello! Welcome to LocalMind AI. What would you like to know today?","bot");
+  return;
+ }
+ history.forEach(item=>{
+  addMessage(item.content,item.role==="user"?"user":"bot");
+ });
+}
+
+function clearChat(){
+ history=[];
+ saveHistory();
+ document.getElementById("chatArea").innerHTML="";
+ addMessage("Chat cleared. Ask me anything!","bot");
+}
+
+function newChat(){clearChat()}
+function showHome(){document.getElementById("question").focus()}
+function showHistory(){
+ loadHistory();
+ document.getElementById("chatArea").scrollTop=document.getElementById("chatArea").scrollHeight;
+}
+
+function startMic(){
+ const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SpeechRecognition){
+  alert("Speech recognition is not supported in this browser. Try Chrome.");
+  return;
+ }
+ const recognition=new SpeechRecognition();
+ recognition.lang="en-IN";
+ recognition.interimResults=false;
+ recognition.onresult=e=>{
+  document.getElementById("question").value=e.results[0][0].transcript;
+ };
+ recognition.onerror=()=>alert("Microphone recognition failed. Check permission.");
+ recognition.start();
+}
+
+async function toggleCamera(){
+ if(cameraStream){stopCamera();return}
+ try{
+  cameraStream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});
+  const video=document.getElementById("cameraVideo");
+  video.srcObject=cameraStream;
+  document.getElementById("cameraBox").classList.remove("hidden");
+ }catch(error){
+  alert("Camera access failed. Allow camera permission and use HTTPS or localhost.");
+ }
+}
+
+function stopCamera(){
+ if(cameraStream){
+  cameraStream.getTracks().forEach(track=>track.stop());
+  cameraStream=null;
+ }
+ document.getElementById("cameraBox").classList.add("hidden");
+}
+
+document.getElementById("question").addEventListener("keydown",e=>{
+ if(e.key==="Enter"&&!e.shiftKey){
+  e.preventDefault();sendMessage();
+ }
+});
+
+window.addEventListener("load",()=>{
+ const user=JSON.parse(localStorage.getItem("localmindUser")||"null");
+ if(user)openHome(user);
+});
+</script>
+</body>
+</html>
